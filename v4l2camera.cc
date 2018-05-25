@@ -113,7 +113,7 @@ namespace {
   //[callback helpers]
   void Camera::WatchCB(uv_poll_t* handle,
                        void (*callbackCall)(CallbackData* data)) {
-    std::cout << "watchcb start";
+    std::cout << "watchcb start\n";
     Nan::HandleScope scope;
     auto data = static_cast<CallbackData*>(handle->data);
     uv_poll_stop(handle);
