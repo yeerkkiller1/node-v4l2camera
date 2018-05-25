@@ -301,8 +301,8 @@ namespace {
   }
   
   void Camera::CaptureCB(uv_poll_t* handle, int /*status*/, int /*events*/) {
-    Nan::ThrowError("hi!");
     auto callCallback = [](CallbackData* data) -> void {
+          Nan::ThrowError("hi!");
       Nan::HandleScope scope;
       auto thisObj = Nan::New<v8::Object>(data->thisObj);
       auto camera = Nan::ObjectWrap::Unwrap<Camera>(thisObj)->camera;
