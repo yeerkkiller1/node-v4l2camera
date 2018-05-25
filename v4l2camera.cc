@@ -117,8 +117,8 @@ namespace {
     uv_poll_stop(handle);
     uv_close(reinterpret_cast<uv_handle_t*>(handle), 
              [](uv_handle_t* handle) -> void {delete handle;});
-          Nan::ThrowError("hi3");
     callbackCall(data);
+              Nan::ThrowError("hi3");
     data->thisObj.Reset();
     delete data;
   }
