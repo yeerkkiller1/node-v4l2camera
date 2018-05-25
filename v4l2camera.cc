@@ -113,14 +113,15 @@ namespace {
   //[callback helpers]
   void Camera::WatchCB(uv_poll_t* handle,
                        void (*callbackCall)(CallbackData* data)) {
+    std::cout << "watchcb start";
     Nan::HandleScope scope;
     auto data = static_cast<CallbackData*>(handle->data);
     uv_poll_stop(handle);
     uv_close(reinterpret_cast<uv_handle_t*>(handle), 
              [](uv_handle_t* handle) -> void {delete handle;});
-        std::cout << "before callback";
+    std::cout << "before callbackCall";
     callbackCall(data);
-              Nan::ThrowError("hi3");
+    std::cout << "after callbackCall";
     data->thisObj.Reset();
     delete data;
   }
@@ -304,16 +305,20 @@ namespace {
   
   void Camera::CaptureCB(uv_poll_t* handle, int /*status*/, int /*events*/) {
     auto callCallback = [](CallbackData* data) -> void {
+      std::cout << "callCallback start";
       Nan::HandleScope scope;
       auto thisObj = Nan::New<v8::Object>(data->thisObj);
       auto camera = Nan::ObjectWrap::Unwrap<Camera>(thisObj)->camera;
       auto captured = bool{camera_capture(camera)};
       std::vector<v8::Local<v8::Value>> args{{Nan::New(captured)}};
-
+    
+      std::cout << "callCallback before actual call";
       data->callback->Call(thisObj, args.size(), args.data());
-      Nan::ThrowError("hi4");
+      std::cout << "callCallback after actual call";
     };
+    std::cout << "before CaptureCB.WatchCB";
     WatchCB(handle, callCallback);
+    std::cout << "after CaptureCB.WatchCB";
   }
   NAN_METHOD(Camera::Capture) {
     Watch(info, CaptureCB);
