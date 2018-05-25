@@ -2,6 +2,7 @@
 
 #include <nan.h>
 #include <errno.h>
+#include <iostream>
 
 #include <memory>
 #include <sstream>
