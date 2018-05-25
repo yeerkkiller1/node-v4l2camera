@@ -302,12 +302,12 @@ namespace {
   
   void Camera::CaptureCB(uv_poll_t* handle, int /*status*/, int /*events*/) {
     auto callCallback = [](CallbackData* data) -> void {
-          Nan::ThrowError("hi!");
       Nan::HandleScope scope;
       auto thisObj = Nan::New<v8::Object>(data->thisObj);
       auto camera = Nan::ObjectWrap::Unwrap<Camera>(thisObj)->camera;
       auto captured = bool{camera_capture(camera)};
       std::vector<v8::Local<v8::Value>> args{{Nan::New(captured)}};
+      Nan::ThrowError("hi2");
       data->callback->Call(thisObj, args.size(), args.data());
     };
     WatchCB(handle, callCallback);
