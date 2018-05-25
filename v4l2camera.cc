@@ -117,7 +117,7 @@ namespace {
     uv_poll_stop(handle);
     uv_close(reinterpret_cast<uv_handle_t*>(handle), 
              [](uv_handle_t* handle) -> void {delete handle;});
-    
+          Nan::ThrowError("hi3");
     callbackCall(data);
     data->thisObj.Reset();
     delete data;
@@ -307,8 +307,9 @@ namespace {
       auto camera = Nan::ObjectWrap::Unwrap<Camera>(thisObj)->camera;
       auto captured = bool{camera_capture(camera)};
       std::vector<v8::Local<v8::Value>> args{{Nan::New(captured)}};
-      Nan::ThrowError("hi2");
+
       data->callback->Call(thisObj, args.size(), args.data());
+      Nan::ThrowError("hi4");
     };
     WatchCB(handle, callCallback);
   }
