@@ -300,7 +300,9 @@ namespace {
       Nan::ThrowError(cameraError(camera));
       return;
     }
-    Watch(info, StopCB);
+    if (info.Length() > 0) {
+      Watch(info, StopCB);
+    }
   }
   
   void Camera::CaptureCB(uv_poll_t* handle, int /*status*/, int /*events*/) {
