@@ -421,7 +421,7 @@ namespace {
     ctor->SetClassName(name);
     ctor->InstanceTemplate()->SetInternalFieldCount(1);
     
-    constructor.Reset(info.GetIsolate(), ctor->GetFunction());
+    constructor.Reset(isolate, ctor->GetFunction());
     
     Nan::SetPrototypeMethod(ctor, "start", Start);
     Nan::SetPrototypeMethod(ctor, "stop", Stop);
