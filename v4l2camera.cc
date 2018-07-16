@@ -83,7 +83,7 @@ void MyObject::PlusOne(const FunctionCallbackInfo<Value>& args) {
 //*/
 
 void InitAll(Local<Object> exports, Local<Object> module) {
-    MyObject::Init(exports);
+  MyObject::Init(exports);
 }
 
 NODE_MODULE(NODE_GYP_MODULE_NAME, InitAll);

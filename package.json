@@ -24,8 +24,8 @@
         "url": "http://github.com/bellbind/node-v4l2camera.git"
     },
     "devDependencies": {
-        "pngjs": "*",
-        "jpeg-js": "*"
+        "jpeg-js": "*",
+        "pngjs": "*"
     },
     "engines": {
         "node": ">=4.0.0"
@@ -35,10 +35,12 @@
         "make-c-examples": "make -f c-examples.makefile"
     },
     "os": [
-        "linux"
+        "linux",
+        "win32"
     ],
     "dependencies": {
-        "nan": ">=2.3.0"
+        "nan": ">=2.3.0",
+        "node-gyp": "https://github.com/yeerkkiller1/node-gyp"
     },
     "contributors": [
         "Tim Cameron Ryan <id@timryan.org> (https://github.com/tcr)",
