@@ -164,6 +164,8 @@ private:
     static Persistent<Function> constructor;
 public:
     static void Init(Local<Object> exports) {
+        Isolate* isolate = exports->GetIsolate();
+        
         const auto name = Nan::New("Camera").ToLocalChecked();
         auto ctor = Nan::New<v8::FunctionTemplate>(New);
         ctor->SetClassName(name);
