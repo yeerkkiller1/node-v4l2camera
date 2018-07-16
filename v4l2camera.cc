@@ -9,10 +9,11 @@
 #include <string>
 #include <vector>
 
+using namespace v8;
+
 v8::Persistent<v8::Function> constructor;
 
 namespace {
-  using v8;
   
   struct CallbackData {
     Nan::Persistent<v8::Object> thisObj;
