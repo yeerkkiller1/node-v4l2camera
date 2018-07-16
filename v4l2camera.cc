@@ -12,6 +12,8 @@
 v8::Persistent<v8::Function> constructor;
 
 namespace {
+  using v8;
+  
   struct CallbackData {
     Nan::Persistent<v8::Object> thisObj;
     std::unique_ptr<Nan::Callback> callback;
