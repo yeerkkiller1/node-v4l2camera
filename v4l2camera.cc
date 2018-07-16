@@ -13,6 +13,74 @@ using namespace v8;
 
 v8::Persistent<v8::Function> constructor;
 
+class MyObject : public::ObjectWrap {
+public:
+    static void Init(Local<Object> exports) {
+        Isolate* isolate = exports->GetIsolate();
+
+        // Prepare constructor template
+        Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
+        tpl->SetClassName(String::NewFromUtf8(isolate, "MyObject"));
+        tpl->InstanceTemplate()->SetInternalFieldCount(1);
+
+        // Prototype
+        NODE_SET_PROTOTYPE_METHOD(tpl, "plusOne", PlusOne);
+
+        constructor.Reset(isolate, tpl->GetFunction());
+        exports->Set(String::NewFromUtf8(isolate, "MyObject"), tpl->GetFunction());
+    }
+    
+    explicit MyObject() { }
+    ~MyObject() { }
+
+private:
+    static Persistent<Function> constructor;
+
+    static void New(const FunctionCallbackInfo<Value>& args) {
+        Isolate* isolate = args.GetIsolate();
+
+        if (args.IsConstructCall()) {
+            // Invoked as constructor: `new MyObject(...)`
+            double value = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
+            MyObject* obj = new MyObject(value);
+            obj->Wrap(args.This());
+            args.GetReturnValue().Set(args.This());
+        } else {
+            // Invoked as plain function `MyObject(...)`, turn into construct call.
+            const int argc = 1;
+            Local<Value> argv[argc] = { args[0] };
+            Local<Context> context = isolate->GetCurrentContext();
+            Local<Function> cons = Local<Function>::New(isolate, constructor);
+            Local<Object> result = cons->NewInstance(context, argc, argv).ToLocalChecked();
+            args.GetReturnValue().Set(result);
+        }
+    }
+
+    static void PlusOne(const FunctionCallbackInfo<Value>& args) {
+        Isolate* isolate = args.GetIsolate();
+
+        MyObject* obj = ObjectWrap::Unwrap<MyObject>(args.Holder());
+        obj->value_ += 1;
+
+        args.GetReturnValue().Set(Number::New(isolate, obj->value_));
+    }
+}
+
+
+void CreateObject(const FunctionCallbackInfo<Value>& args) {
+    MyObject::NewInstance(args);
+}
+
+void InitAll(Local<Object> exports, Local<Object> module) {
+    MyObject::Init(exports->GetIsolate());
+
+    NODE_SET_METHOD(module, "exports", CreateObject);
+}
+
+NODE_MODULE(NODE_GYP_MODULE_NAME, InitAll);
+
+
+/*
 namespace {
   
   struct CallbackData {
@@ -22,26 +90,24 @@ namespace {
   
   class Camera : public Nan::ObjectWrap {
   public:
-    static  NAN_MODULE_INIT(Init);
+    static void Init(Local<Object> exports);
   private:
     static void New(const v8::FunctionCallbackInfo<v8::Value>& info);
-    static NAN_METHOD(Start);
-    static NAN_METHOD(Stop);
-    static NAN_METHOD(Capture);
-    static NAN_METHOD(FrameRaw);
-    static NAN_METHOD(FrameYUYVToRGB);
-    static NAN_METHOD(ConfigGet);
-    static NAN_METHOD(ConfigSet);
-    static NAN_METHOD(ControlGet);
-    static NAN_METHOD(ControlSet);
+    static void Start(const FunctionCallbackInfo<Value>& info);
+    static void Stop(const FunctionCallbackInfo<Value>& info);
+    static void Capture(const FunctionCallbackInfo<Value>& info);
+    static void FrameRaw(const FunctionCallbackInfo<Value>& info);
+    static void FrameYUYVToRGB(const FunctionCallbackInfo<Value>& info);
+    static void ConfigGet(const FunctionCallbackInfo<Value>& info);
+    static void ConfigSet(const FunctionCallbackInfo<Value>& info);
+    static void ControlGet(const FunctionCallbackInfo<Value>& info);
+    static void ControlSet(const FunctionCallbackInfo<Value>& info);
     
     static void StopCB(uv_poll_t* handle, int status, int events);
     static void CaptureCB(uv_poll_t* handle, int status, int events);
     
-    static void
-    WatchCB(uv_poll_t* handle, void (*callbackCall)(CallbackData* data));
-    static void
-    Watch(const Nan::FunctionCallbackInfo<v8::Value>& info, uv_poll_cb cb);
+    static void WatchCB(uv_poll_t* handle, void (*callbackCall)(CallbackData* data));
+    static void Watch(const v8::FunctionCallbackInfo<v8::Value>& info, uv_poll_cb cb);
     
     Camera();
     ~Camera();
@@ -286,7 +352,7 @@ namespace {
   }
 
   
-  void Camera::StopCB(uv_poll_t* handle, int /*status*/, int /*events*/) {
+  void Camera::StopCB(uv_poll_t* handle, int status, int events) {
     auto callCallback = [](CallbackData* data) -> void {
       Nan::HandleScope scope;
       auto thisObj = Nan::New<v8::Object>(data->thisObj);
@@ -305,7 +371,7 @@ namespace {
     }
   }
   
-  void Camera::CaptureCB(uv_poll_t* handle, int /*status*/, int /*events*/) {
+  void Camera::CaptureCB(uv_poll_t* handle, int status, int events) {
     auto callCallback = [](CallbackData* data) -> void {
       Nan::HandleScope scope;
       auto thisObj = Nan::New<v8::Object>(data->thisObj);
@@ -442,3 +508,4 @@ namespace {
 }
 
 NODE_MODULE(v4l2camera, Camera::Init)
+*/
