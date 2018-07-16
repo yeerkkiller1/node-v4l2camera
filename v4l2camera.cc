@@ -21,7 +21,7 @@ namespace {
   public:
     static  NAN_MODULE_INIT(Init);
   private:
-    static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
+    static void New(const v8::FunctionCallbackInfo<v8::Value>& info);
     static NAN_METHOD(Start);
     static NAN_METHOD(Stop);
     static NAN_METHOD(Capture);
@@ -247,7 +247,7 @@ namespace {
     return formats;
   }
   
-  NAN_METHOD(Camera::New) {
+  void Camera::New(const FunctionCallbackInfo<Value>& info) {
     if (info.Length() < 1) {
       Nan::ThrowTypeError("argument required: device");
       return;
