@@ -11,9 +11,8 @@
 
 using namespace v8;
 
-v8::Persistent<v8::Function> constructor;
-
 class MyObject : public node::ObjectWrap {
+  static Persistent<Function> constructor;
 public:
     static void Init(Local<Object> exports) {
         Isolate* isolate = exports->GetIsolate();
@@ -35,8 +34,6 @@ public:
     ~MyObject() { }
 
 private:
-    static Persistent<Function> constructor;
-
     static void New(const FunctionCallbackInfo<Value>& args) {
         Isolate* isolate = args.GetIsolate();
 
