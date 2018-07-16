@@ -29,18 +29,6 @@ public:
         constructor.Reset(isolate, tpl->GetFunction());
         exports->Set(String::NewFromUtf8(isolate, "MyObject"), tpl->GetFunction());
     }
-
-    static void NewInstance(const v8::FunctionCallbackInfo<v8::Value>& args) {
-        Isolate* isolate = args.GetIsolate();
-
-        const unsigned argc = 1;
-        Local<Value> argv[argc] = { args[0] };
-        Local<Function> cons = Local<Function>::New(isolate, constructor);
-        Local<Context> context = isolate->GetCurrentContext();
-        Local<Object> instance = cons->NewInstance(context, argc, argv).ToLocalChecked();
-
-        args.GetReturnValue().Set(instance);
-    }
     
     double value_;
     explicit MyObject(double value = 0): value_(value) { }
@@ -80,14 +68,8 @@ private:
 };
 
 
-void CreateObject(const FunctionCallbackInfo<Value>& args) {
-    MyObject::NewInstance(args);
-}
-
 void InitAll(Local<Object> exports, Local<Object> module) {
-    MyObject::Init(exports->GetIsolate());
-
-    NODE_SET_METHOD(module, "exports", CreateObject);
+    MyObject::Init(exports);
 }
 
 NODE_MODULE(NODE_GYP_MODULE_NAME, InitAll);
