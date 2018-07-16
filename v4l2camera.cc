@@ -13,6 +13,30 @@ using namespace v8;
 
 
 
+struct LogContext {
+    std::string msg;
+};
+static void logRecord(camera_log_t type, const char* msg, void* pointer) {
+    std::stringstream ss;
+    switch (type) {
+    case CAMERA_ERROR:
+        ss << "CAMERA ERROR [" << msg << "] " << errno << " " << strerror(errno);
+        break;
+    case CAMERA_FAIL:
+        ss << "CAMERA FAIL [" << msg << "]";
+        break;
+    case CAMERA_INFO:
+        ss << "CAMERA INFO [" << msg << "]";
+        break;
+    }
+    static_cast<LogContext*>(pointer)->msg = ss.str();
+}
+
+static inline v8::Local<v8::Value> cameraError(const camera_t* camera) {
+    const auto ctx = static_cast<LogContext*>(camera->context.pointer);
+    return Nan::Error(ctx->msg.c_str());
+}
+
 static inline v8::Local<v8::Value> getValue(const v8::Local<v8::Object>& self, const char* name) {
     return Nan::Get(self, Nan::New(name).ToLocalChecked()).ToLocalChecked();
 }
@@ -345,31 +369,6 @@ private:
     }
     camera_t* camera;
 };
-
-//[error message handling]
-struct LogContext {
-    std::string msg;
-};
-static void logRecord(camera_log_t type, const char* msg, void* pointer) {
-    std::stringstream ss;
-    switch (type) {
-    case CAMERA_ERROR:
-        ss << "CAMERA ERROR [" << msg << "] " << errno << " " << strerror(errno);
-        break;
-    case CAMERA_FAIL:
-        ss << "CAMERA FAIL [" << msg << "]";
-        break;
-    case CAMERA_INFO:
-        ss << "CAMERA INFO [" << msg << "]";
-        break;
-    }
-    static_cast<LogContext*>(pointer)->msg = ss.str();
-}
-
-static inline v8::Local<v8::Value> cameraError(const camera_t* camera) {
-    const auto ctx = static_cast<LogContext*>(camera->context.pointer);
-    return Nan::Error(ctx->msg.c_str());
-}
 
 
 void Camera::WatchCB(uv_poll_t* handle,
