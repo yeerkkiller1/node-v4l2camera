@@ -356,8 +356,27 @@ private:
         WatchCB(handle, callCallback);
     }
     
-    static void WatchCB(uv_poll_t* handle, void (*callbackCall)(CallbackData* data));
-    static void Watch(const v8::FunctionCallbackInfo<v8::Value>& info, uv_poll_cb cb);
+    static void WatchCB(uv_poll_t* handle, void (*callbackCall)(CallbackData* data)) {
+        Nan::HandleScope scope;
+        auto data = static_cast<CallbackData*>(handle->data);
+        uv_poll_stop(handle);
+        uv_close(reinterpret_cast<uv_handle_t*>(handle), 
+                            [](uv_handle_t* handle) -> void {delete handle;});
+        callbackCall(data);
+        data->thisObj.Reset();
+        delete data;
+    }
+    static void Watch(const v8::FunctionCallbackInfo<v8::Value>& info, uv_poll_cb cb) {
+        auto data = new CallbackData;
+        data->thisObj.Reset(info.Holder());
+        data->callback.reset(new Nan::Callback(info[0].As<v8::Function>()));
+        auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
+        
+        auto handle = new uv_poll_t;
+        handle->data = data;
+        uv_poll_init(uv_default_loop(), handle, camera->fd);
+        uv_poll_start(handle, UV_READABLE, cb);
+    }
     
     Camera() : camera(nullptr) {}
     ~Camera() {
@@ -370,29 +389,5 @@ private:
     camera_t* camera;
 };
 
-
-void Camera::WatchCB(uv_poll_t* handle,
-                                            void (*callbackCall)(CallbackData* data)) {
-    Nan::HandleScope scope;
-    auto data = static_cast<CallbackData*>(handle->data);
-    uv_poll_stop(handle);
-    uv_close(reinterpret_cast<uv_handle_t*>(handle), 
-                        [](uv_handle_t* handle) -> void {delete handle;});
-    callbackCall(data);
-    data->thisObj.Reset();
-    delete data;
-}
-void Camera::Watch(const Nan::FunctionCallbackInfo<v8::Value>& info,
-                                        uv_poll_cb cb) {
-    auto data = new CallbackData;
-    data->thisObj.Reset(info.Holder());
-    data->callback.reset(new Nan::Callback(info[0].As<v8::Function>()));
-    auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
-    
-    auto handle = new uv_poll_t;
-    handle->data = data;
-    uv_poll_init(uv_default_loop(), handle, camera->fd);
-    uv_poll_start(handle, UV_READABLE, cb);
-}
 
 NODE_MODULE(v4l2camera, Camera::Init)
