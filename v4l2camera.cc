@@ -9,10 +9,9 @@
 #include <string>
 #include <vector>
 
+v8::Persistent<v8::Function> constructor;
 
 namespace {
-
- 
   struct CallbackData {
     Nan::Persistent<v8::Object> thisObj;
     std::unique_ptr<Nan::Callback> callback;
@@ -422,7 +421,7 @@ namespace {
     ctor->SetClassName(name);
     ctor->InstanceTemplate()->SetInternalFieldCount(1);
     
-    Camera::constructor.Reset(info.GetIsolate(), ctor->GetFunction());
+    constructor.Reset(info.GetIsolate(), ctor->GetFunction());
     
     Nan::SetPrototypeMethod(ctor, "start", Start);
     Nan::SetPrototypeMethod(ctor, "stop", Stop);
