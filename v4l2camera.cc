@@ -41,8 +41,8 @@ private:
 
         if (args.IsConstructCall()) {
             // Invoked as constructor: `new MyObject(...)`
-            double value = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
-            MyObject* obj = new MyObject(value);
+            //double value = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
+            MyObject* obj = new MyObject();
             obj->Wrap(args.This());
             args.GetReturnValue().Set(args.This());
         } else {
@@ -64,7 +64,7 @@ private:
 
         args.GetReturnValue().Set(Number::New(isolate, obj->value_));
     }
-}
+};
 
 
 void CreateObject(const FunctionCallbackInfo<Value>& args) {
