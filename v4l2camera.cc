@@ -31,7 +31,7 @@ public:
     }
     
     double value_;
-    explicit MyObject() { }
+    explicit MyObject(double value = 0): value_(value) { }
     ~MyObject() { }
 
 private:
