@@ -421,8 +421,6 @@ namespace {
     ctor->SetClassName(name);
     ctor->InstanceTemplate()->SetInternalFieldCount(1);
     
-    constructor.Reset(v8::Isolate::GetCurrent(), ctor->GetFunction());
-    
     Nan::SetPrototypeMethod(ctor, "start", Start);
     Nan::SetPrototypeMethod(ctor, "stop", Stop);
     Nan::SetPrototypeMethod(ctor, "capture", Capture);
@@ -434,6 +432,8 @@ namespace {
     Nan::SetPrototypeMethod(ctor, "controlGet", ControlGet);
     Nan::SetPrototypeMethod(ctor, "controlSet", ControlSet);
     Nan::Set(target, name, Nan::GetFunction(ctor).ToLocalChecked());
+    
+    constructor.Reset(v8::Isolate::GetCurrent(), ctor->GetFunction());
   }
 }
 
