@@ -11,6 +11,8 @@
 
 
 namespace {
+
+  Persistent<Function> Camera::constructor;
   
   struct CallbackData {
     Nan::Persistent<v8::Object> thisObj;
@@ -418,9 +420,10 @@ namespace {
   NAN_MODULE_INIT(Camera::Init) {
     const auto name = Nan::New("Camera").ToLocalChecked();
     auto ctor = Nan::New<v8::FunctionTemplate>(New);
-    auto ctorInst = ctor->InstanceTemplate();
     ctor->SetClassName(name);
-    ctorInst->SetInternalFieldCount(1);
+    ctor->InstanceTemplate()->SetInternalFieldCount(1);
+    
+    constructor.Reset(info.GetIsolate(), ctor->GetFunction());
     
     Nan::SetPrototypeMethod(ctor, "start", Start);
     Nan::SetPrototypeMethod(ctor, "stop", Stop);
