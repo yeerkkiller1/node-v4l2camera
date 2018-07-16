@@ -12,8 +12,7 @@
 
 namespace {
 
-  v8::Persistent<v8::Function> Camera::constructor;
-  
+ 
   struct CallbackData {
     Nan::Persistent<v8::Object> thisObj;
     std::unique_ptr<Nan::Callback> callback;
