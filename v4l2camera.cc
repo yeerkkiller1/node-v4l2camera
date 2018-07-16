@@ -12,14 +12,14 @@
 using namespace v8;
 
 
+
 static inline v8::Local<v8::Value> getValue(const v8::Local<v8::Object>& self, const char* name) {
     return Nan::Get(self, Nan::New(name).ToLocalChecked()).ToLocalChecked();
 }
 static inline std::int32_t getInt(const v8::Local<v8::Object>& self, const char* name) {
     return Nan::To<std::int32_t>(getValue(self, name)).FromJust();
 }
-static inline std::uint32_t
-getUint(const v8::Local<v8::Object>& self, const char* name) {
+static inline std::uint32_t getUint(const v8::Local<v8::Object>& self, const char* name) {
     return Nan::To<std::uint32_t>(getValue(self, name)).FromJust();
 }
 
@@ -167,20 +167,20 @@ public:
         ctor->SetClassName(name);
         ctor->InstanceTemplate()->SetInternalFieldCount(1);
         
-        Nan::SetPrototypeMethod(ctor, "start", Start);
-        Nan::SetPrototypeMethod(ctor, "stop", Stop);
-        Nan::SetPrototypeMethod(ctor, "capture", Capture);
-        Nan::SetPrototypeMethod(ctor, "frameRaw", FrameRaw);
-        Nan::SetPrototypeMethod(ctor, "toYUYV", FrameRaw);
-        Nan::SetPrototypeMethod(ctor, "toRGB", FrameYUYVToRGB);
-        Nan::SetPrototypeMethod(ctor, "configGet", ConfigGet);
-        Nan::SetPrototypeMethod(ctor, "configSet", ConfigSet);
-        Nan::SetPrototypeMethod(ctor, "controlGet", ControlGet);
-        Nan::SetPrototypeMethod(ctor, "controlSet", ControlSet);
+        NODE_SET_PROTOTYPE_METHOD(ctor, "start", Start);
+        NODE_SET_PROTOTYPE_METHOD(ctor, "stop", Stop);
+        NODE_SET_PROTOTYPE_METHOD(ctor, "capture", Capture);
+        NODE_SET_PROTOTYPE_METHOD(ctor, "frameRaw", FrameRaw);
+        NODE_SET_PROTOTYPE_METHOD(ctor, "toYUYV", FrameRaw);
+        NODE_SET_PROTOTYPE_METHOD(ctor, "toRGB", FrameYUYVToRGB);
+        NODE_SET_PROTOTYPE_METHOD(ctor, "configGet", ConfigGet);
+        NODE_SET_PROTOTYPE_METHOD(ctor, "configSet", ConfigSet);
+        NODE_SET_PROTOTYPE_METHOD(ctor, "controlGet", ControlGet);
+        NODE_SET_PROTOTYPE_METHOD(ctor, "controlSet", ControlSet);
         
         constructor.Reset(v8::Isolate::GetCurrent(), ctor->GetFunction());
         
-        Nan::Set(target, name, Nan::GetFunction(ctor).ToLocalChecked());
+        exports->Set(String::NewFromUtf8(isolate, "Camera"), ctor->GetFunction());
     }
 private:
     static void New(const FunctionCallbackInfo<v8::Value>& info) {
