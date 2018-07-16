@@ -13,7 +13,7 @@ using namespace v8;
 
 v8::Persistent<v8::Function> constructor;
 
-class MyObject : public::ObjectWrap {
+class MyObject : public node::ObjectWrap {
 public:
     static void Init(Local<Object> exports) {
         Isolate* isolate = exports->GetIsolate();
