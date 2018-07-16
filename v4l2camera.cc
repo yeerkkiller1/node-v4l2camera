@@ -160,6 +160,8 @@ struct CallbackData {
 };
     
 class Camera : public node::ObjectWrap {
+private:
+    static Persistent<Function> constructor;
 public:
     static void Init(Local<Object> exports) {
         const auto name = Nan::New("Camera").ToLocalChecked();
