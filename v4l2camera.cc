@@ -30,6 +30,7 @@ public:
         exports->Set(String::NewFromUtf8(isolate, "MyObject"), tpl->GetFunction());
     }
     
+    double value_;
     explicit MyObject() { }
     ~MyObject() { }
 
@@ -41,8 +42,8 @@ private:
 
         if (args.IsConstructCall()) {
             // Invoked as constructor: `new MyObject(...)`
-            //double value = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
-            MyObject* obj = new MyObject();
+            double value = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
+            MyObject* obj = new MyObject(value);
             obj->Wrap(args.This());
             args.GetReturnValue().Set(args.This());
         } else {
