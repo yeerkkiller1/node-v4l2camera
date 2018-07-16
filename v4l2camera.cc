@@ -432,7 +432,7 @@ namespace {
     Nan::SetPrototypeMethod(ctor, "controlGet", ControlGet);
     Nan::SetPrototypeMethod(ctor, "controlSet", ControlSet);
     
-    ctor->Reset(v8::Isolate::GetCurrent(), ctor->GetFunction());
+    constructor.Reset(v8::Isolate::GetCurrent(), ctor->GetFunction());
     
     Nan::Set(target, name, Nan::GetFunction(ctor).ToLocalChecked());
   }
