@@ -11,73 +11,37 @@
 
 using namespace v8;
 
-/*
-class MyObject : public node::ObjectWrap {
-private:
-        static v8::Persistent<v8::Function> constructor;
-        double value_;
 
-public:
-        static void Init(v8::Local<v8::Object> exports) {
-                Isolate* isolate = exports->GetIsolate();
-
-                // Prepare constructor template
-                Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
-                tpl->SetClassName(String::NewFromUtf8(isolate, "MyObject"));
-                tpl->InstanceTemplate()->SetInternalFieldCount(1);
-
-                // Prototype
-                NODE_SET_PROTOTYPE_METHOD(tpl, "plusOne", PlusOne);
-
-                constructor.Reset(isolate, tpl->GetFunction());
-                exports->Set(String::NewFromUtf8(isolate, "MyObject"), tpl->GetFunction());
-        }
-
-private:
-        explicit MyObject(double value = 0): value_(value) { }
-        ~MyObject() { }
-
-        static void New(const v8::FunctionCallbackInfo<v8::Value>& args) {
-                Isolate* isolate = args.GetIsolate();
-
-                if (args.IsConstructCall()) {
-                        // Invoked as constructor: `new MyObject(...)`
-                        double value = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
-                        MyObject* obj = new MyObject(value);
-                        obj->Wrap(args.This());
-                        args.GetReturnValue().Set(args.This());
-                } else {
-                        // Invoked as plain function `MyObject(...)`, turn into construct call.
-                        const int argc = 1;
-                        Local<Value> argv[argc] = { args[0] };
-                        Local<Context> context = isolate->GetCurrentContext();
-                        Local<Function> cons = Local<Function>::New(isolate, constructor);
-                        Local<Object> result = cons->NewInstance(context, argc, argv).ToLocalChecked();
-                        args.GetReturnValue().Set(result);
-                }
-        }
-        static void PlusOne(const v8::FunctionCallbackInfo<v8::Value>& args) {
-                Isolate* isolate = args.GetIsolate();
-
-                MyObject* obj = ObjectWrap::Unwrap<MyObject>(args.Holder());
-                obj->value_ += 1;
-
-                args.GetReturnValue().Set(Number::New(isolate, obj->value_));
-        }
-};
-
-
-Persistent<Function> MyObject::constructor;
-
-void InitAll(Local<Object> exports, Local<Object> module) {
-    MyObject::Init(exports);
+static inline v8::Local<v8::Value> getValue(const v8::Local<v8::Object>& self, const char* name) {
+    return Nan::Get(self, Nan::New(name).ToLocalChecked()).ToLocalChecked();
+}
+static inline std::int32_t getInt(const v8::Local<v8::Object>& self, const char* name) {
+    return Nan::To<std::int32_t>(getValue(self, name)).FromJust();
+}
+static inline std::uint32_t
+getUint(const v8::Local<v8::Object>& self, const char* name) {
+    return Nan::To<std::uint32_t>(getValue(self, name)).FromJust();
 }
 
-NODE_MODULE(NODE_GYP_MODULE_NAME, InitAll);
-*/
-
-
-
+static inline void setValue(const v8::Local<v8::Object>& self, const char* name, 
+                    const v8::Local<v8::Value>& value) {
+    Nan::Set(self, Nan::New(name).ToLocalChecked(), value);
+}
+static inline void setInt(const v8::Local<v8::Object>& self, const char* name,
+                std::int32_t value) {
+    setValue(self, name, Nan::New(value));
+}
+static inline void setUint(const v8::Local<v8::Object>& self, const char* name, 
+                std::uint32_t value) {
+    setValue(self, name, Nan::New(value));
+}
+static inline void setString(const v8::Local<v8::Object>& self, const char* name, 
+                    const char* value) {
+    setValue(self, name, Nan::New(value).ToLocalChecked());
+}
+static inline void setBool(const v8::Local<v8::Object>& self, const char* name, bool value) {
+    setValue(self, name, Nan::New<v8::Boolean>(value));
+}
 
 static const char* control_type_names[] = {
     "invalid",
@@ -404,46 +368,6 @@ static inline v8::Local<v8::Value> cameraError(const camera_t* camera) {
 }
 
 
-//[helpers]
-static inline v8::Local<v8::Value>
-getValue(const v8::Local<v8::Object>& self, const char* name) {
-    return Nan::Get(self, Nan::New(name).ToLocalChecked()).ToLocalChecked();
-}
-static inline std::int32_t
-getInt(const v8::Local<v8::Object>& self, const char* name) {
-    return Nan::To<std::int32_t>(getValue(self, name)).FromJust();
-}
-static inline std::uint32_t
-getUint(const v8::Local<v8::Object>& self, const char* name) {
-    return Nan::To<std::uint32_t>(getValue(self, name)).FromJust();
-}
-
-static inline void 
-setValue(const v8::Local<v8::Object>& self, const char* name, 
-                    const v8::Local<v8::Value>& value) {
-    Nan::Set(self, Nan::New(name).ToLocalChecked(), value);
-}
-static inline void 
-setInt(const v8::Local<v8::Object>& self, const char* name,
-                std::int32_t value) {
-    setValue(self, name, Nan::New(value));
-}
-static inline void 
-setUint(const v8::Local<v8::Object>& self, const char* name, 
-                std::uint32_t value) {
-    setValue(self, name, Nan::New(value));
-}
-static inline void 
-setString(const v8::Local<v8::Object>& self, const char* name, 
-                    const char* value) {
-    setValue(self, name, Nan::New(value).ToLocalChecked());
-}
-static inline void 
-setBool(const v8::Local<v8::Object>& self, const char* name, bool value) {
-    setValue(self, name, Nan::New<v8::Boolean>(value));
-}
-
-//[callback helpers]
 void Camera::WatchCB(uv_poll_t* handle,
                                             void (*callbackCall)(CallbackData* data)) {
     Nan::HandleScope scope;
