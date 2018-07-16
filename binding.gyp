@@ -1,8 +1,8 @@
 # -*- mode: python -*-
 {
     "targets": [{
-        "target_name": "v4l2camera", 
-        "sources": ["v4l2camera.cc"],
+        "target_name": "myobject", 
+        "sources": ["myobject.cc"],
         "include_dirs" : [
  	    "<!(node -e \"require('nan')\")"
 	],
