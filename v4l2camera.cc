@@ -11,6 +11,7 @@
 
 using namespace v8;
 
+/*
 class MyObject : public node::ObjectWrap {
  public:
   static void Init(v8::Local<v8::Object> exports);
@@ -87,6 +88,8 @@ void InitAll(Local<Object> exports, Local<Object> module) {
 }
 
 NODE_MODULE(NODE_GYP_MODULE_NAME, InitAll);
+*/
+
 
 
 /*
