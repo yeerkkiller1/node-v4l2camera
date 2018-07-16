@@ -422,7 +422,7 @@ namespace {
     ctor->SetClassName(name);
     ctor->InstanceTemplate()->SetInternalFieldCount(1);
     
-    constructor.Reset(info.GetIsolate(), ctor->GetFunction());
+    Camera::constructor.Reset(info.GetIsolate(), ctor->GetFunction());
     
     Nan::SetPrototypeMethod(ctor, "start", Start);
     Nan::SetPrototypeMethod(ctor, "stop", Stop);
