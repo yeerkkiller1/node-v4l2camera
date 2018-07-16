@@ -183,8 +183,6 @@ struct CallbackData {
     std::unique_ptr<Nan::Callback> callback;
 };
     
-Persistent<Function> Camera::constructor;
-
 class Camera : public node::ObjectWrap {
 private:
     static Persistent<Function> constructor;
@@ -399,5 +397,6 @@ private:
     camera_t* camera;
 };
 
+Persistent<Function> Camera::constructor;
 
 NODE_MODULE(v4l2camera, Camera::Init)
