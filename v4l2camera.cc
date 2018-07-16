@@ -234,7 +234,7 @@ private:
     }
     static void Start(const FunctionCallbackInfo<Value>& info) {
         auto thisObj = info.Holder();
-        auto camera = Nan::ObjectWrap::Unwrap<Camera>(thisObj)->camera;
+        auto camera = ObjectWrap::Unwrap<Camera>(thisObj)->camera;
         if (!camera_start(camera)) {
             Nan::ThrowError(cameraError(camera));
             return;
