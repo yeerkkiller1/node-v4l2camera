@@ -244,7 +244,7 @@ private:
         info.GetReturnValue().Set(thisObj);
     }
     static void Stop(const FunctionCallbackInfo<Value>& info) {
-        auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
+        auto camera = ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
         if (!camera_stop(camera)) {
             Nan::ThrowError(cameraError(camera));
             return;
@@ -257,7 +257,7 @@ private:
         Watch(info, CaptureCB);
     }
     static void FrameRaw(const FunctionCallbackInfo<Value>& info) {
-        const auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
+        const auto camera = ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
         const auto size = camera->head.length;
         auto data = new uint8_t[size];
         std::copy(camera->head.start, camera->head.start + size, data);
@@ -268,7 +268,7 @@ private:
     }
     static void FrameYUYVToRGB(const FunctionCallbackInfo<Value>& info) {
         // TBD: check the current format as YUYV
-        const auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
+        const auto camera = ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
         auto rgb = yuyv2rgb(camera->head.start, camera->width, camera->height);
         const auto size = camera->width * camera->height * 3;
         const auto flag = v8::ArrayBufferCreationMode::kInternalized;
@@ -277,7 +277,7 @@ private:
         info.GetReturnValue().Set(array);
     }
     static void ConfigGet(const FunctionCallbackInfo<Value>& info) {
-        const auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
+        const auto camera = ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
         camera_format_t cformat;
         if (!camera_config_get(camera, &cformat)) {
             Nan::ThrowError(cameraError(camera));
@@ -293,7 +293,7 @@ private:
         }
         const auto cformat = convertCFormat(info[0]->ToObject());
         auto thisObj = info.Holder();
-        auto camera = Nan::ObjectWrap::Unwrap<Camera>(thisObj)->camera;
+        auto camera = ObjectWrap::Unwrap<Camera>(thisObj)->camera;
         if (!camera_config_set(camera, &cformat)) {
             Nan::ThrowError(cameraError(camera));
             return;
@@ -308,7 +308,7 @@ private:
             return;
         }
         const auto id = info[0]->Uint32Value();
-        auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
+        auto camera = ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
         auto value = std::int32_t{0};
         auto success = bool{camera_control_get(camera, id, &value)};
         if (!success) {
@@ -325,7 +325,7 @@ private:
         const auto id = info[0]->Uint32Value();
         const auto value = info[1]->Int32Value();
         auto thisObj = info.Holder();
-        auto camera = Nan::ObjectWrap::Unwrap<Camera>(thisObj)->camera;
+        auto camera = ObjectWrap::Unwrap<Camera>(thisObj)->camera;
         auto success = bool{camera_control_set(camera, id, value)};
         if (!success) {
             Nan::ThrowError(cameraError(camera));
@@ -346,7 +346,7 @@ private:
         auto callCallback = [](CallbackData* data) -> void {
             Nan::HandleScope scope;
             auto thisObj = Nan::New<v8::Object>(data->thisObj);
-            auto camera = Nan::ObjectWrap::Unwrap<Camera>(thisObj)->camera;
+            auto camera = ObjectWrap::Unwrap<Camera>(thisObj)->camera;
             auto captured = bool{camera_capture(camera)};
             std::vector<v8::Local<v8::Value>> args{{Nan::New(captured)}};
         
@@ -369,7 +369,7 @@ private:
         auto data = new CallbackData;
         data->thisObj.Reset(info.Holder());
         data->callback.reset(new Nan::Callback(info[0].As<v8::Function>()));
-        auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
+        auto camera = ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
         
         auto handle = new uv_poll_t;
         handle->data = data;
