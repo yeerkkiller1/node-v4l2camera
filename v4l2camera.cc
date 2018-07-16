@@ -12,7 +12,7 @@
 
 namespace {
 
-  Persistent<Function> Camera::constructor;
+  v8::Persistent<Function> Camera::constructor;
   
   struct CallbackData {
     Nan::Persistent<v8::Object> thisObj;
