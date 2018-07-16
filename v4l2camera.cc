@@ -90,6 +90,12 @@ void InitAll(Local<Object> exports, Local<Object> module) {
 NODE_MODULE(NODE_GYP_MODULE_NAME, InitAll);
 */
 
+void InitAll(Local<Object> exports, Local<Object> module) {
+    //MyObject::Init(exports);
+}
+
+NODE_MODULE(NODE_GYP_MODULE_NAME, InitAll);
+
 
 
 /*
