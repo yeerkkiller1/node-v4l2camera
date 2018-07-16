@@ -190,9 +190,8 @@ public:
     static void Init(Local<Object> exports) {
         Isolate* isolate = exports->GetIsolate();
         
-        const auto name = Nan::New("Camera").ToLocalChecked();
-        auto ctor = Nan::New<v8::FunctionTemplate>(New);
-        ctor->SetClassName(name);
+        Local<FunctionTemplate> ctor = FunctionTemplate::New(isolate, New);
+        ctor->SetClassName(String::NewFromUtf8(isolate, "Camera"));
         ctor->InstanceTemplate()->SetInternalFieldCount(1);
         
         NODE_SET_PROTOTYPE_METHOD(ctor, "start", Start);
