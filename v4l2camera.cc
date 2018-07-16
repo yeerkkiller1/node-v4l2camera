@@ -1,4 +1,4 @@
-#include "capture.h"
+//#include "capture.h"
 
 #include <nan.h>
 #include <errno.h>

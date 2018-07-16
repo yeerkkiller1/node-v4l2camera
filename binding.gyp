@@ -3,9 +3,7 @@
     "targets": [{
         "target_name": "v4l2camera", 
         "sources": ["v4l2camera.cc"],
-        "include_dirs" : [
- 	    "<!(node -e \"require('nan')\")"
-	],
+        "include_dirs" : [ "<!(node -e \"require('nan')\")" ],
         "cflags": ["-Wall", "-Wextra", "-pedantic", "-O3"],
         "xcode_settings": {
     	    "OTHER_CPLUSPLUSFLAGS": ["-std=c++14"],
