@@ -21,7 +21,7 @@ namespace {
   public:
     static  NAN_MODULE_INIT(Init);
   private:
-    static NAN_METHOD(New);
+    static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
     static NAN_METHOD(Start);
     static NAN_METHOD(Stop);
     static NAN_METHOD(Capture);
@@ -264,7 +264,6 @@ namespace {
     auto thisObj = info.This();
     auto self = new Camera;
     self->camera = camera;
-    self->SetInternalFieldCount(1);
     self->Wrap(thisObj);
     setValue(thisObj, "device", info[0]);
     setValue(thisObj, "formats", cameraFormats(camera));
