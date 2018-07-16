@@ -11,7 +11,7 @@
 
 using namespace v8;
 
-/*
+//*
 class MyObject : public node::ObjectWrap {
  public:
   static void Init(v8::Local<v8::Object> exports);
@@ -47,8 +47,7 @@ void MyObject::Init(Local<Object> exports) {
   NODE_SET_PROTOTYPE_METHOD(tpl, "plusOne", PlusOne);
 
   constructor.Reset(isolate, tpl->GetFunction());
-  exports->Set(String::NewFromUtf8(isolate, "MyObject"),
-               tpl->GetFunction());
+  exports->Set(String::NewFromUtf8(isolate, "MyObject"), tpl->GetFunction());
 }
 
 void MyObject::New(const FunctionCallbackInfo<Value>& args) {
@@ -81,17 +80,10 @@ void MyObject::PlusOne(const FunctionCallbackInfo<Value>& args) {
   args.GetReturnValue().Set(Number::New(isolate, obj->value_));
 }
 
-
+//*/
 
 void InitAll(Local<Object> exports, Local<Object> module) {
     MyObject::Init(exports);
-}
-
-NODE_MODULE(NODE_GYP_MODULE_NAME, InitAll);
-*/
-
-void InitAll(Local<Object> exports, Local<Object> module) {
-    //MyObject::Init(exports);
 }
 
 NODE_MODULE(NODE_GYP_MODULE_NAME, InitAll);
