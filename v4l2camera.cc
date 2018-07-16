@@ -223,14 +223,23 @@ private:
         }
         camera->context.pointer = new LogContext;
         camera->context.log = &logRecord;
-        
-        auto thisObj = info.This();
-        auto self = new Camera;
-        self->camera = camera;
-        self->Wrap(thisObj);
-        setValue(thisObj, "device", info[0]);
-        setValue(thisObj, "formats", cameraFormats(camera));
-        setValue(thisObj, "controls", cameraControls(camera));
+
+
+        Isolate* isolate = info.GetIsolate();
+        if (info.IsConstructCall()) {
+            // Invoked as constructor: `new Camera(...)`
+            auto thisObj = info.This();
+
+            Camera* obj = new Camera;
+            setValue(thisObj, "device", info[0]);
+            setValue(thisObj, "formats", cameraFormats(camera));
+            setValue(thisObj, "controls", cameraControls(camera));
+
+            obj->camera = camera;
+            obj->Wrap(thisObj);
+
+            info.GetReturnValue().Set(info.This());
+        }
     }
     static void Start(const FunctionCallbackInfo<Value>& info) {
         auto thisObj = info.Holder();
@@ -377,7 +386,7 @@ private:
         uv_poll_start(handle, UV_READABLE, cb);
     }
     
-    Camera() : camera(nullptr) {}
+    explicit Camera() : camera(nullptr) {}
     ~Camera() {
         if (camera) {
             auto ctx = static_cast<LogContext*>(camera->context.pointer);
