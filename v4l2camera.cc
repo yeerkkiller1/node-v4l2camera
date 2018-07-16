@@ -264,6 +264,7 @@ namespace {
     auto thisObj = info.This();
     auto self = new Camera;
     self->camera = camera;
+    self->SetInternalFieldCount(1);
     self->Wrap(thisObj);
     setValue(thisObj, "device", info[0]);
     setValue(thisObj, "formats", cameraFormats(camera));
