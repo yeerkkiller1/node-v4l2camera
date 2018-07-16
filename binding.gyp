@@ -2,7 +2,7 @@
 {
     "targets": [{
         "target_name": "v4l2camera", 
-        "sources": ["camera.c", "v4l2camera.cc"],
+        "sources": ["capture.c", "v4l2camera.cc"],
         "include_dirs" : [ "<!(node -e \"require('nan')\")" ],
         "cflags": ["-Wall", "-Wextra", "-pedantic", "-O3"],
         "xcode_settings": {
